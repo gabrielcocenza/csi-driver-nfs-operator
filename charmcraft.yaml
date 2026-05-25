@@ -1,0 +1,55 @@
+# Copyright 2026 Canonical Limited
+# See LICENSE file for licensing details.
+type: charm
+name: csi-driver-nfs-operator
+title: NFS CSI Driver Operator
+summary: Deploys the csi-driver-nfs Helm chart on Kubernetes worker and control-plane nodes.
+description: |
+  A subordinate charm that installs nfs-common on worker and control-plane nodes,
+  and deploys the csi-driver-nfs Helm chart into the kube-system namespace using
+  the vendored chart.
+
+  Intended for use in both online and air-gapped environments.
+
+base: ubuntu@24.04
+platforms:
+  amd64:
+  arm64:
+
+subordinate: true
+
+requires:
+  juju-info:
+    interface: juju-info
+    scope: container
+    optional: false
+  kube-control:
+    interface: kube-control
+    limit: 1
+    optional: false
+
+config:
+  options:
+    kubelet-dir:
+      type: string
+      default: "/var/lib/kubelet"
+      description: >
+        Path to the kubelet directory on worker nodes. Defaults to the
+        standard path for Canonical Kubernetes. Override for
+        MicroK8s (/var/snap/microk8s/common/var/lib/kubelet)
+
+resources:
+  helm-binary:
+    type: file
+    filename: helm.snap
+    description: >
+      Optional helm snap for air-gapped environments. If provided (non-empty),
+      this snap is installed locally instead of pulling from the snap store.
+      The snap must be a classic-confined helm snap.
+
+parts:
+  charm:
+    plugin: uv
+    source: .
+    build-snaps:
+      - astral-uv
