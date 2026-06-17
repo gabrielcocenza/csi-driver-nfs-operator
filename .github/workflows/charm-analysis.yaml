@@ -1,0 +1,19 @@
+name: Charm Analysis
+# Unit testing, Style Linting, Type Linting, Static Analysis, and Spelling
+
+on:
+  pull_request:
+
+jobs:
+  unit-tests:
+    uses: canonical/operator-workflows/.github/workflows/test.yaml@27f280ed34b54bd9f65451dc966bfde701e84b62 # main
+    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - '3.12'
+    with:
+      self-hosted-runner:  false
+      with-uv: true
+      python-version: ${{ matrix.python-version }}
