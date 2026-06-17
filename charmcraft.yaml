@@ -37,6 +37,18 @@ config:
         Path to the kubelet directory on worker nodes. Defaults to the
         standard path for Canonical Kubernetes. Override for
         MicroK8s (/var/snap/microk8s/common/var/lib/kubelet)
+    deploy-external-snapshotter:
+      description: |
+        Whether to deploy the cluster-wide external snapshot-controller alongside NFS CSI.
+
+        Set to 'true' (default) to deploy the snapshot-controller and its CRDs.
+        Set to 'false' if the cluster already has a snapshot-controller installed
+        (e.g. provided by the cloud or another charm) to avoid running multiple
+        instances, which causes split-brain snapshot handling.
+
+        IMPORTANT: Exactly one snapshot-controller should run per cluster.
+      default: true
+      type: boolean
 
 resources:
   helm-binary:
